@@ -2,11 +2,85 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
+        <title>{% block title %}home!{% endblock %}</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://bootswatch.com/4/solar/bootstrap.min.css">
         {% block stylesheets %}{% endblock %}
     </head>
     <body>
-        {% block body %}{% endblock %}
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="{{ path('home') }}">PubX</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarColor02">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('maison_index') }}">Maison</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('gouvernorat_list') }}">Gouvernorat</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('region_index') }}">Region</a>
+                </li>
+            </ul>
+            {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+            <div class="dropdown show">
+                <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    {{ app.user.nom }}
+                </a>
+
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                    <a class="dropdown-item" href="{{ path('app_logout') }}">Logout</a>
+                </div>
+            </div>
+                {% else %}
+                    <a href="{{ path('user_new') }}" type="button" class="btn btn-info btn-lg">s'inscrire</a>
+                    <a href="{{ path('app_login') }}" type="button" class="btn btn-success btn-lg">se connecter</a>
+            {% endif %}
+        </div>
+    </nav>
+    <div class="conainer">
+        <div class="row">
+            <div class="col-8 offset-md-2">
+        {% block body %}
+
+        {% endblock %}
+
+            </div>
+        </div>
+    </div>
+    {%  if maisons is defined %}
+    <div class="container mt-4 ">
+        <div class="row ">
+            {%  for maison in maisons %}
+            <div class="col-4 mb-2">
+                <div class="card" style="width: 22rem;">
+                    <img src="{{ vich_uploader_asset(maison, 'imageFile') }}" alt="{{ maison.image }}" class="card-img-top" alt="..." style="width: 21.8rem; height: 20rem">
+                    <div class="card-body">
+                        <h2 class="card-title">Prix: {{ maison.prix }} TND</h2>
+                        <p class="card-text">Address: {{ maison.gouvernorat.title }} - {{ maison.region.title }}</p>
+                        <hr>
+                        <p class="card-text">Crée le: {{ maison.createAt|date("d-m-Y") }}</p>
+                        <hr>
+                        <a href="{{ path('maison_show', {id: maison.id}) }}" class="btn btn-primary">Voir plus</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
         {% block javascripts %}{% endblock %}
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     </body>
 </html>
